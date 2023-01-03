@@ -1,0 +1,75 @@
+DATA ENDS
+ESEG SEGMENT
+        RES1 DB 0
+        RES2 DB 0
+        RES3 DB 0
+ESEG ENDS
+
+STACK SEGMENT   
+        DB 20H DUP(?)
+STACK ENDS
+
+CODE SEGMENT 
+        ASSUME CS:CODE,DS:DATA,ES:ESEG
+
+START:
+    MOV AX,DATA
+    MOV DS,AX
+    MOV AX,ESEG
+    MOV ES,AX
+    LEA SI,BUF
+    MOV RES1,0
+    MOV RES2,0
+    MOV RES3,0
+    MOV CX  ,20
+NEXT1:
+    MOV AL,[SI]
+    CMP AL,5
+    JL  NEXT2
+    INC RES3
+    JMP STO
+NEXT2:
+    CMP AL,0
+    JL  NEXT3
+    INC RES2
+    JMP STO
+NEXT3:
+    INC RES1
+STO:
+    INC SI
+    LOOP    NEXT1
+    MOV AH,02H
+    MOV DL,36H
+    INT 21H
+    MOV AH,02H
+    MOV DL,0AH
+    INT 21H
+    MOV AH,02H
+    MOV DL,0DH
+    INT 21H
+
+    MOV AH,02H
+    MOV DL,34H
+    INT 21H
+    MOV AH,02H
+    MOV DL,0AH
+    INT 21H
+    MOV AH,02H
+    MOV DL,0DH
+    INT 21H
+
+    LEA DX,STRING
+    MOV AH,09H
+    INT 21H
+    MOV AH,02H
+    MOV DL,0AH
+    INT 21H
+    MOV AH,02H
+    MOV DL,0DH
+    INT 21H
+    MOV AH,4CH
+    INT 21H
+
+CODE ENDS
+    END START
+
